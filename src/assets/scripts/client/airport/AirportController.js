@@ -128,7 +128,10 @@ class AirportController {
      * @method reset
      */
     reset() {
-        return;
+        this._eventBus = EventBus;
+        this._airportListToLoad = [];
+        this.airports = {};
+        this.current = null;
     }
 
     /**
@@ -163,6 +166,17 @@ class AirportController {
 
         nextAirportModel.set(airportJson);
     }
+
+    /**
+     * @for AirportController
+     * @method getAiracCycle
+     * @property airac
+     * @return {number}
+    */
+    getAiracCycle() {
+        return this.current.airac;
+    }
+
     /**
      * Retrieve a specific `AirportModel` instance
      *
