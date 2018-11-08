@@ -3,7 +3,6 @@ import sinon from 'sinon';
 import _isArray from 'lodash/isArray';
 import _isEqual from 'lodash/isEqual';
 import _isObject from 'lodash/isObject';
-import _omit from 'lodash/omit';
 import AircraftModel from '../../../src/assets/scripts/client/aircraft/AircraftModel';
 import ModeController from '../../../src/assets/scripts/client/aircraft/ModeControl/ModeController';
 import Pilot from '../../../src/assets/scripts/client/aircraft/Pilot/Pilot';
@@ -18,7 +17,6 @@ import {
 } from '../../fixtures/aircraftFixtures';
 import { airportModelFixture } from '../../fixtures/airportFixtures';
 import { createNavigationLibraryFixture } from '../../fixtures/navigationLibraryFixtures';
-import { FLIGHT_PHASE } from '../../../src/assets/scripts/client/constants/aircraftConstants';
 import { INVALID_NUMBER } from '../../../src/assets/scripts/client/constants/globalConstants';
 
 // mocks
@@ -336,8 +334,8 @@ ava('.climbViaSID() returns error response if #flightPlanAltitude has not been s
     const expectedResult = [
         false,
         {
-            log: 'unable to climb via SID, no altitude assigned',
-            say: 'unable to climb via SID, no altitude assigned'
+            log: 'unable, no altitude assigned',
+            say: 'unable, no altitude assigned'
         }
     ];
     const aircraftModel = new AircraftModel(DEPARTURE_AIRCRAFT_INIT_PROPS_MOCK);
@@ -652,7 +650,7 @@ ava('.maintainAltitude() returns early responding that they are unable to mainta
     );
 
     t.true(aircraftModel.mcp.altitudeMode === 'VNAV');
-    t.true(aircraftModel.mcp.altitude === aircraftModel.altitude);
+    t.true(aircraftModel.mcp.altitude === 8000);
     t.deepEqual(result, expectedResult);
 });
 
