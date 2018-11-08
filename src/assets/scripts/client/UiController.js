@@ -309,13 +309,12 @@ class UiController {
         const parsedSelectedOption = !_isNaN(parseFloat(selectedOption))
             ? parseFloat(selectedOption)
             : selectedOption;
-        let optionSelectTempalate = `<option value="${optionData.value}">${optionData.displayLabel}</option>`;
 
         if (optionData.value === parsedSelectedOption) {
-            optionSelectTempalate = `<option value="${optionData.value}" selected>${optionData.displayLabel}</option>`;
+            return `<option value="${optionData.value}" selected>${optionData.displayLabel}</option>`;
         }
 
-        return optionSelectTempalate;
+        return `<option value="${optionData.value}">${optionData.displayLabel}</option>`;
     }
 
     /**
