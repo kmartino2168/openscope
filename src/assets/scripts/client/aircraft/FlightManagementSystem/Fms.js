@@ -492,7 +492,7 @@ export default class Fms {
      * @param waypointName {string} name of the waypoint
      * @return {WaypointModel}
      */
-    findWaypoiont(waypointName) {
+    findWaypoint(waypointName) {
         return _find(this.waypoints, (waypoint) => waypoint.name === waypointName);
     }
 
