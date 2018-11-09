@@ -485,6 +485,18 @@ export default class Fms {
     }
 
     /**
+     * Return the waypoint that matches the provided name
+     *
+     * @for Fms
+     * @method findWaypoiont
+     * @param waypointName {string} name of the waypoint
+     * @return {WaypointModel}
+     */
+    findWaypoiont(waypointName) {
+        return _find(this.waypoints, (waypoint) => waypoint.name === waypointName);
+    }
+
+    /**
      * Return the next waypoint having an #altitudeMaximum equal to or less than the specified value
      *
      * This is helpful to see only future waypoints for which a particular altitude is
@@ -551,7 +563,7 @@ export default class Fms {
      * @method findNextWaypointWithMinimumAltitudeRestriction
      * @return {WaypointModel}
      */
-    findNextWaypointWithMinimumAltitudeRestriction(){
+    findNextWaypointWithMinimumAltitudeRestriction() {
         return _find(this.waypoints, (waypointModel) => waypointModel.hasAltiudeMinimumRestriction);
     }
 
