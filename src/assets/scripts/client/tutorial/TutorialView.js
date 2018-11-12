@@ -240,7 +240,7 @@ export default class TutorialView {
             text: ['To move the middle of the radar screen, use the right click button and drag.',
                 'Zoom in and out by scrolling, and press the middle mouse button or scroll wheel to reset the zoom.',
                 'To select an aircraft when it is in flight, simply left-click.'
-                ].join(' '),
+            ].join(' '),
             position: tutorial_position
         });
 
@@ -250,7 +250,7 @@ export default class TutorialView {
                    'should be a strip with a blue bar on the left, meaning the strip represents a departing aircraft.',
                    'Click the first one ({CALLSIGN}). The aircraft\'s callsign will appear in the command entry box',
                    'and the strip will move slightly to the side. This means that the aircraft is selected.'
-               ].join(' '),
+            ].join(' '),
             parse: (t) => {
                 if (prop.aircraft.list.length <= 0) {
                     return t;
@@ -264,17 +264,16 @@ export default class TutorialView {
 
         this.tutorial_step({
             title: 'Taxiing',
-            text: ['Now type in &lsquo;taxi&rsquo; or &lsquo;wait&rsquo; into the command box after the callsign and hit Return;',
+            text: ['Now type in &lsquo;taxi {RUNWAY}&rsquo; or &lsquo;wait {RUNWAY}&rsquo; into the command box after the callsign and hit Return;',
                    'the messages area above it will show that the aircraft is taxiing to runway ({RUNWAY}) in',
-                   'preparation for takeoff. (You could also specify to which runway to taxi the aircraft by',
-                   'entering the runway name after &lsquo;taxi&rsquo; or &lsquo;wait&rsquo;.)'
-               ].join(' '),
+                   'preparation for takeoff.'
+            ].join(' '),
             parse: (t) => {
                 if (prop.aircraft.list.length < 0) {
                     return t;
                 }
 
-                return t.replace('{RUNWAY}', departureAircraft.fms.departureRunwayModel.name);
+                return t.replace(/{RUNWAY}/g, departureAircraft.fms.departureRunwayModel.name);
             },
             side: 'left',
             position: tutorial_position
@@ -285,7 +284,7 @@ export default class TutorialView {
             text: ['When it appears at the start of runway ({RUNWAY}) (which may take a couple of seconds), click it (or press the up arrow once)',
                    'and type in &lsquo;caf&rsquo; (for "cleared as filed"). This tells the aircraft it is cleared to follow its flightplan.',
                    'Just as in real life, this step must be done before clearing the aircraft for takeoff, so they know where they\'re supposed to go.'
-                ].join(' '),
+            ].join(' '),
             parse: (t) => {
                 if (prop.aircraft.list.length <= 0) {
                     return t;
@@ -304,13 +303,6 @@ export default class TutorialView {
                    'Once it\'s going fast enough, it should lift off the ground and you should',
                    'see its altitude increasing. Meanwhile, read the next step.'
             ].join(' '),
-            parse: (t) => {
-                if (prop.aircraft.list.length <= 0) {
-                    return t;
-                }
-
-                return t.replace('{RUNWAY}', departureAircraft.fms.departureRunwayModel.name);
-            },
             side: 'left',
             position: tutorial_position
         });
@@ -321,13 +313,6 @@ export default class TutorialView {
                    'Each strip has a bar on its left side, colored blue for departures and',
                    'red for arrivals.'
             ].join(' '),
-            parse: (t) => {
-                if (prop.aircraft.list.length <= 0) {
-                    return t;
-                }
-
-                return t.replace('{RUNWAY}', departureAircraft.fms.departureRunwayModel.name);
-            },
             side: 'left',
             position: tutorial_position
         });
@@ -397,13 +382,6 @@ export default class TutorialView {
                    'Remember, just as in real ATC, altitudes are ALWAYS written in hundreds of feet, eg. &lsquo;descend 30&rsquo; for 3,000ft or &lsquo;climb',
                    ' 100&rsquo; for 10,000ft.'
             ].join(' '),
-            parse: (t) => {
-                if (prop.aircraft.list.length <= 0) {
-                    return t;
-                }
-
-                return t.replace('{CALLSIGN}', departureAircraft.callsign);
-            },
             side: 'left',
             position: tutorial_position
         });
@@ -415,8 +393,7 @@ export default class TutorialView {
                    'and dangerous to give a turn in the wrong direction. If the heading is only slightly left or right, to avoid choosing the wrong direction,',
                    'you can tell them to &lsquo;fly heading&rsquo; by typing &lsquo;fh ###&rsquo;, and the aircraft will simply turn the shortest direction',
                    'to face that heading.'
-               ].join(' '),
-            parse: (v) => v,
+            ].join(' '),
             side: 'left',
             position: tutorial_position
         });
@@ -428,13 +405,6 @@ export default class TutorialView {
                    '&lsquo;+&rsquo; and &lsquo;-&rsquo; keys on the numpad, followed by the speed, in knots. Note that this assigned speed is indicated',
                    'airspeed, and our radar scope can only display groundspeed; so, the values may be different.'
             ].join(' '),
-            parse: (t) => {
-                if (prop.aircraft.list.length <= 0) {
-                    return t;
-                }
-
-                return t.replace(/{ANGLE}/g, heading_to_string(departureAircraft.destination));
-            },
             side: 'left',
             position: tutorial_position
         });
@@ -444,14 +414,7 @@ export default class TutorialView {
             text: ['Instead of guiding each aircraft based on heading, you can also clear each aircraft to proceed to a fix or navaid (shown on the map',
                    'as a small triangle). Just use the command &lsquo;route&rsquo; and the name of a fix, and the aircraft will fly to it. Upon passing the',
                    'fix, it will continue flying along its present heading.'
-               ].join(' '),
-            parse: (t) => {
-                if (prop.aircraft.list.length <= 0) {
-                    return t;
-                }
-
-                return t.replace('{CALLSIGN}', departureAircraft.callsign);
-            },
+            ].join(' '),
             side: 'left',
             position: tutorial_position
         });
@@ -460,14 +423,7 @@ export default class TutorialView {
             title: 'Proceed Direct',
             text: ['The proceed direct command &lsquo;pd&rsquo; instructs an aircraft to go directly to a waypoint in the flight plan. For example, if an',
                    'aircraft is flying to fixes [A, B, C], issuing the command &lsquo;pd B&rsquo; will cause the aircraft to go to B, then C.'
-               ].join(' '),
-            parse: (t) => {
-                if (prop.aircraft.list.length <= 0) {
-                    return t;
-                }
-
-                return t.replace('{CALLSIGN}', prop.aircraft.list[0].callsign);
-            },
+            ].join(' '),
             side: 'left',
             position: tutorial_position
         });
@@ -477,8 +433,7 @@ export default class TutorialView {
             text: ['When the aircraft crosses the airspace boundary, it will ',
                    'automatically remove itself from the flight strip bay on the right.',
                    'Congratulations, you\'ve successfully taken off one aircraft.'
-               ].join(' '),
-            parse: (v) => v,
+            ].join(' '),
             side: 'left',
             position: tutorial_position
         });
@@ -490,8 +445,7 @@ export default class TutorialView {
                    'order to guide it to be in front of a runway. Make sure to get the aircraft down to',
                    'around 4,000ft, and 10-15 nautical miles (2-3 range rings) away from the airport.',
                    'While you work the airplane, read the next step.'
-               ].join(' '),
-            parse: (v) => v,
+            ].join(' '),
             side: 'left',
             position: tutorial_position
         });
@@ -502,20 +456,24 @@ export default class TutorialView {
                    'it must be on a heading that will cross the runway\'s extended centerline, that is no more than 30 degrees offset from the',
                    'runway\'s heading. Once we eventually give them an approach clearance, you can expect aircraft to capture the ILS\'s localizer',
                    'once they\'re within a few degrees of the extended centerline.'
-               ].join(' '),
-            parse: (v) => v,
+            ].join(' '),
             side: 'left',
             position: tutorial_position
         });
 
         this.tutorial_step({
             title: 'Approach Clearances, part 2',
-            text: ['When you have the aircraft facing the right direction, just select it and type &lsquo;i &lt;runway&gt;&rsquo;',
+            text: ['When you have the aircraft facing the right direction, just select it and type &lsquo;i {RUNWAY}&rsquo;',
                    'with the runway that\'s in front of it. Once it\'s close enough to capture the localizer, the assigned altitude on its strip',
                    'will change to "ILS locked" (meaning the aircraft is capable of guiding itself down to the runway via',
                    'the Instrument Landing System), and the assigned heading should now show the runway to which it has an approach clearance.'
-               ].join(' '),
-            parse: (v) => v,
+            ].join(' '),
+            parse: (t) => {
+                // This isn't robust. If there are multiple runways in use, or the arrival a/c has filed to land
+                // elsewhere then the tutorial message will not be correct. However, it's not a bad guess, and hopefully
+                // the player hasn't dicked with it too much.
+                return t.replace('{RUNWAY}', AirportController.airport_get().arrivalRunwayModel.name);
+            },
             side: 'left',
             position: tutorial_position
         });
@@ -526,8 +484,7 @@ export default class TutorialView {
                    'they follow an acronym "PTAC" for the four elements of an approach clearance, the "T" and "C" of which',
                    'stand for "Turn" and "Clearance", both of which we entered separately in this tutorial. Though longer, it is both ',
                    'easier and more real-world accurate to enter them together, like this: &lsquo;fh 250 i 28r&rsquo;.'
-               ].join(' '),
-            parse: (v) => v,
+            ].join(' '),
             side: 'left',
             position: tutorial_position
         });
@@ -538,8 +495,7 @@ export default class TutorialView {
                    'the wind is blowing toward. If it\'s pointing straight down, the wind is blowing from the North',
                    'to the South. Aircraft must be assigned to different runways such that they always take off and land into the wind, unless the',
                    'wind is less than 5 knots.'
-               ].join(' '),
-            parse: (v) => v,
+            ].join(' '),
             side: 'left',
             position: tutorial_position
         });
@@ -549,8 +505,7 @@ export default class TutorialView {
             text: ['There are also various commands that can be entered into your "scope" which deal with moving',
                    'aircraft data blocks (labels), transferring control of aircraft, etc. To toggle between aircraft',
                    'commands and scope commands, press the tab key.'
-               ].join(' '),
-            parse: (v) => v,
+            ].join(' '),
             side: 'left',
             position: tutorial_position
         });
@@ -562,8 +517,7 @@ export default class TutorialView {
                    'like directing aircraft to a runway with a strong crosswind/tailwind, losing separation between aircraft, or ignoring an',
                    'aircraft, you will also lose points. If you\'d like, you can just ignore the score; it doesn\'t have any effect',
                    'with the simulation.'
-               ].join(' '),
-            parse: (v) => v,
+            ].join(' '),
             side: 'left',
             position: tutorial_position
         });
@@ -574,8 +528,7 @@ export default class TutorialView {
                    'In the TRACON, minimum separation is 3 miles laterally or 1000 feet vertically. Keep them separated,',
                    'keep them moving, and you\'ll be a controller in no time!',
                    'A full list of commands can be found <a title="openScope Command Reference" href="https://github.com/openscope/openscope/blob/develop/documentation/commands.md">here</a>.'
-               ].join(' '),
-            parse: (v) => v,
+            ].join(' '),
             side: 'left',
             position: tutorial_position
         });
