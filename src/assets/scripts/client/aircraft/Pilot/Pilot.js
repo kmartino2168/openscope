@@ -119,7 +119,7 @@ export default class Pilot {
     maintainAltitude(altitude, expedite, shouldUseSoftCeiling, airportModel, aircraftModel) {
         const response = aircraftModel.validateNextAltitude(altitude);
 
-        if (response && !response[0]) {
+        if (!response[0]) {
             return response;
         }
 
@@ -459,7 +459,7 @@ export default class Pilot {
 
         const response = aircraftModel.validateNextAltitude(nextAltitude);
 
-        if (response && !response[0]) {
+        if (!response[0]) {
             return response;
         }
 
@@ -549,7 +549,7 @@ export default class Pilot {
 
         const response = aircraft.validateNextAltitude(altitude);
 
-        if (response && !response[0]) {
+        if (!response[0]) {
             return response;
         }
 
