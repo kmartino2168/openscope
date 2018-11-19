@@ -9,7 +9,7 @@ import { SELECTORS } from '../constants/selectors';
  * @type {string}
  * @final
  */
-const UI_SETTINGS_MODAL_TEMPLATE = '<div class="option-dialog"></div>';
+const UI_SETTINGS_MODAL_TEMPLATE = '<div class="option-dialog dialog"><p class="dialog-titel">Options</p><div class="dialog-body nice-scrollbar"></div></div>';
 
 /**
  * @property UI_OPTION_CONTAINER_TEMPLATE
@@ -61,6 +61,7 @@ export default class SettingsController {
      */
     init() {
         this.$dialog = $(UI_SETTINGS_MODAL_TEMPLATE);
+        this.$body = this.$dialog.find('.dialog-body');
         const descriptions = GameController.game.option.getDescriptions();
 
         _forEach(descriptions, (opt) => {
@@ -69,7 +70,7 @@ export default class SettingsController {
             }
 
             const $container = this._buildOptionTemplate(opt);
-            this.$dialog.append($container);
+            this.$body.append($container);
         });
 
         this.$element.append(this.$dialog);
@@ -107,7 +108,7 @@ export default class SettingsController {
      */
     _buildOptionTemplate(option) {
         const $container = $(UI_OPTION_CONTAINER_TEMPLATE);
-        $container.append(`<span class="option-description">${option.description}</span>`);
+        $container.append(`<span class="option-label">${option.description}</span>`);
 
         const $optionSelector = $(UI_OPTION_SELECTOR_TEMPLATE);
         const $selector = $(`<select name="${option.name}"></select>`);
