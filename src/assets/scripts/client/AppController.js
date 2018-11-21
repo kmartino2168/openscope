@@ -153,20 +153,22 @@ export default class AppController {
         // work on reducing in the future.
         AirportController.init(initialAirportIcao, initialAirportData, airportLoadList);
         NavigationLibrary.init(initialAirportData);
+        SpawnPatternCollection.init(initialAirportData);
 
         this.airlineController = new AirlineController(airlineList);
         this.scopeModel = new ScopeModel();
         this.aircraftController = new AircraftController(aircraftTypeDefinitionList, this.airlineController, this.scopeModel);
+
+        SpawnScheduler.init(this.aircraftController);
+
         // TEMPORARY!
         // some instances are attached to the window here as an intermediate step away from global functions.
         // this allows for any module file to call window.{module}.{method} and will make the transition to
         // explicit instance parameters easier.
         window.aircraftController = this.aircraftController;
 
-        SpawnPatternCollection.init(initialAirportData);
         UiController.init(this.$element);
 
-        this.spawnScheduler = new SpawnScheduler(this.aircraftController);
         this.canvasController = new CanvasController(this.$canvasesElement, this.aircraftController, this.scopeModel);
         this.aircraftCommander = new AircraftCommander(this.aircraftController.onRequestToChangeTransponderCode);
         this.inputController = new InputController(this.$element, this.aircraftCommander, this.aircraftController, this.scopeModel);
@@ -272,11 +274,9 @@ export default class AppController {
         SpawnPatternCollection.reset();
         GameController.destroyTimers();
 
-        this.spawnScheduler = null;
-
         NavigationLibrary.init(nextAirportJson);
         SpawnPatternCollection.init(nextAirportJson);
-        this.spawnScheduler = new SpawnScheduler(this.aircraftController);
+        SpawnScheduler.startScheduler();
 
         this.updateViewControls();
     }
