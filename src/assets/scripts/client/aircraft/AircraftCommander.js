@@ -413,8 +413,13 @@ export default class AircraftCommander {
     runRoute(aircraft, data) {
         // TODO: is this .toUpperCase() necessary??
         const routeString = data[0].toUpperCase();
+        const readback = aircraft.pilot.applyPartialRouteAmendment(routeString);
 
-        return aircraft.pilot.applyPartialRouteAmendment(routeString);
+        if (readback[0] && aircraft.isDeparture()) {
+            aircraft.pilot.hasDepartureClearance = true;
+        }
+
+        return readback;
     }
 
     /**
@@ -438,6 +443,10 @@ export default class AircraftCommander {
         // continue with the previous instructions (whether a heading, etc)
         if (readback[0]) {
             aircraft.mcp.setHeadingLnav();
+
+            if (aircraft.isDeparture()) {
+                aircraft.pilot.hasDepartureClearance = true;
+            }
         }
 
         return readback;

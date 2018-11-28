@@ -891,7 +891,6 @@ export default class Fms {
         }
 
         this._routeModel = nextRouteModel;
-        this.hasDepartureClearance = true;
 
         this.skipToWaypointName(currentWaypointName);
 
