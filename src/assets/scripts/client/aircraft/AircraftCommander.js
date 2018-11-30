@@ -4,9 +4,8 @@ import _map from 'lodash/map';
 import _round from 'lodash/round';
 import AirportController from '../airport/AirportController';
 import EventBus from '../lib/EventBus';
-import GameController from '../game/GameController';
+import GameController, { GAME_EVENTS } from '../game/GameController';
 import NavigationLibrary from '../navigationLibrary/NavigationLibrary';
-import TimeKeeper from '../engine/TimeKeeper';
 import UiController from '../ui/UiController';
 import { MCP_MODE } from './ModeControl/modeControlConstants';
 import {
@@ -30,8 +29,9 @@ import { radiansToDegrees } from '../utilities/unitConverters';
  * @class AircraftCommander
  */
 export default class AircraftCommander {
-    constructor(onChangeTransponderCode) {
+    constructor(aircraftController, onChangeTransponderCode) {
         this._eventBus = EventBus;
+        this._aircraftController = aircraftController;
         this._onChangeTransponderCode = onChangeTransponderCode;
     }
 
@@ -653,15 +653,25 @@ export default class AircraftCommander {
             return [false, readback];
         }
 
+        // TODO: move somewhere else
+        const previousAircraft = this._aircraftController.findAircraftByCallsign(runway.lastAircraftTakenoff);
+        if (previousAircraft) {
+            const actualDistance = aircraft.positionModel.distanceToPosition(previousAircraft.positionModel) * 1000;
+            const requiredDistance = aircraft.model.calculateRunwaySeparationDistanceInFeet(previousAircraft.model);
+
+            if (actualDistance < requiredDistance) {
+                const isWarning = true;
+
+                GameController.events_recordNew(GAME_EVENTS.NO_TAKEOFF_SEPARATION);
+                UiController.ui_log(`${aircraft.callsign} taking off without the required ${requiredDistance}ft separation`, isWarning);
+            }
+        }
+
         runway.removeAircraftFromQueue(aircraft.id);
-        aircraft.pilot.configureForTakeoff(airport.initial_alt, runway, aircraft.model.speed.cruise);
-        aircraft.takeoffTime = TimeKeeper.accumulatedDeltaTime;
-        aircraft.setFlightPhase(FLIGHT_PHASE.TAKEOFF);
-        aircraft.scoreWind('taking off');
+        aircraft.takeoff(runway, airport.initial_alt);
 
         readback.log = `wind ${roundedWindAngleInDegrees} at ${roundedWindSpeed}, Runway ${runway.name}, ` +
             'cleared for takeoff';
-
         // We have to make it say winned to make it sound like "Wind" and not "Whined"
         readback.say = `winned ${radio_spellOut(roundedWindAngleInDegrees)} at ` +
             `${radio_spellOut(roundedWindSpeed)}, Runway ${radio_runway(runway.name)}, cleared for takeoff`;

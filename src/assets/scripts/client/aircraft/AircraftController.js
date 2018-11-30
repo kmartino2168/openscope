@@ -388,7 +388,7 @@ export default class AircraftController {
      * @return {AircraftModel|null}
      */
     findAircraftByCallsign(callsign = '') {
-        if (callsign === '') {
+        if (!callsign) {
             return null;
         }
 
