@@ -337,7 +337,13 @@ export default class Pilot {
      * @return {array}             [success of operation, readback]
      */
     applyPartialRouteAmendment(routeString) {
-        return this._fms.applyPartialRouteAmendment(routeString);
+        const readback = this._fms.applyPartialRouteAmendment(routeString);
+
+        if (readback[0]) {
+            this.hasDepartureClearance = true;
+        }
+
+        return readback;
     }
 
     /**
@@ -806,7 +812,13 @@ export default class Pilot {
      * @return {array}              [success of operation, readback]
      */
     replaceFlightPlanWithNewRoute(routeString) {
-        return this._fms.replaceFlightPlanWithNewRoute(routeString);
+        const readback = this._fms.replaceFlightPlanWithNewRoute(routeString);
+
+        if (readback[0]) {
+            this.hasDepartureClearance = true;
+        }
+
+        return readback;
     }
 
     /**
